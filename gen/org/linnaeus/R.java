@@ -15,7 +15,8 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int help=0x7f060002;
+        public static final int circle=0x7f060002;
+        public static final int help=0x7f060003;
         public static final int mapmain=0x7f060000;
         public static final int my_location=0x7f060001;
     }
@@ -29,6 +30,7 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int main_error_mylocation=0x7f040003;
         public static final int main_error_services=0x7f040004;
+        public static final int main_menu_circle=0x7f040005;
         public static final int main_menu_help=0x7f040002;
         /** Main activity 
          */

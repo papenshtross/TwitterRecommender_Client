@@ -7,4 +7,5 @@
     <string name="main_menu_help">How To?</string>
     <string name="main_error_mylocation">My Location Is Not Availible</string>
     <string name="main_error_services">Turn On Location Services</string>
+    <string name="main_menu_circle">Draw a Circle</string>
 </resources>

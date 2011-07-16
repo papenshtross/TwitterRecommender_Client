@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.google.android.maps.*;
 import org.linnaeus.R;
 import org.linnaeus.overlay.CurrentLocationOverlay;
+import org.linnaeus.overlay.SearchCircleOverlay;
 import org.linnaeus.util.MyLocation;
 
 import java.util.List;
@@ -43,6 +44,8 @@ public class MainActivity extends MapActivity {
         CurrentLocationOverlay myLocationOverlay = new CurrentLocationOverlay(getApplicationContext());
         List<Overlay> list = mapView.getOverlays();
         list.add(myLocationOverlay);
+        SearchCircleOverlay searchCircleOverlay = new SearchCircleOverlay(getApplicationContext());
+        list.add(searchCircleOverlay);
     }
 
     @Override
@@ -62,9 +65,16 @@ public class MainActivity extends MapActivity {
         case R.id.help:
             showHelp();
             return true;
+        case R.id.circle:
+            drawCircle();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void drawCircle() {
+        //To change body of created methods use File | Settings | File Templates.
     }
 
     private void moveToMyLocation() {
