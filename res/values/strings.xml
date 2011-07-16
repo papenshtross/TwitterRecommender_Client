@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ClientLite</string>
+
+    <!--Main activity -->
+    <string name="main_menu_mylocation">My Location</string>
+    <string name="main_menu_help">How To?</string>
+    <string name="main_error_mylocation">My Location Is Not Availible</string>
+    <string name="main_error_services">Turn On Location Services</string>
 </resources>
