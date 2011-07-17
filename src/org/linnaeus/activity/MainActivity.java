@@ -1,5 +1,8 @@
 package org.linnaeus.activity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,15 +19,18 @@ import java.util.List;
 
 public class MainActivity extends MapActivity {
 
+    private static final int CURRENT_LOCATION_ZOOM_LEVEL = 10;
     private MapController mapController;
     private MyLocation myLocation = new MyLocation();
     private MyLocation.LocationResult locationResult;
+    private MapView mapView;
+    private SearchCircleOverlay searchCircleOverlay;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        MapView mapView = (MapView) findViewById(R.id.mapmain);
+        mapView = (MapView) findViewById(R.id.mapmain);
         mapView.setBuiltInZoomControls(true); // Attach zoom control
         /* Give start condition (location/zoom) */
         mapController = mapView.getController();
@@ -37,6 +43,7 @@ public class MainActivity extends MapActivity {
                     GeoPoint geoPoint = new GeoPoint((int) lat, (int) lng);
                     MyLocation.setLastLocation(geoPoint);
                     mapController.animateTo(geoPoint);
+                    mapController.setZoom(CURRENT_LOCATION_ZOOM_LEVEL);
                 }
             };
         };
@@ -44,8 +51,6 @@ public class MainActivity extends MapActivity {
         CurrentLocationOverlay myLocationOverlay = new CurrentLocationOverlay(getApplicationContext());
         List<Overlay> list = mapView.getOverlays();
         list.add(myLocationOverlay);
-        SearchCircleOverlay searchCircleOverlay = new SearchCircleOverlay(getApplicationContext());
-        list.add(searchCircleOverlay);
     }
 
     @Override
@@ -74,7 +79,8 @@ public class MainActivity extends MapActivity {
     }
 
     private void drawCircle() {
-        //To change body of created methods use File | Settings | File Templates.
+        searchCircleOverlay = new SearchCircleOverlay(this);
+        mapView.getOverlays().add(searchCircleOverlay);
     }
 
     private void moveToMyLocation() {
@@ -98,4 +104,8 @@ public class MainActivity extends MapActivity {
 
     @Override // Required by MapActivity
     protected boolean isRouteDisplayed() { return false; }
+
+    public MapView getMapView() {
+        return mapView;
     }
+}

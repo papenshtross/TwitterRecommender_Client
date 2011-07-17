@@ -35,5 +35,12 @@ public final class R {
         /** Main activity 
          */
         public static final int main_menu_mylocation=0x7f040001;
+        public static final int search_circle_dialog_button_cancel=0x7f04000a;
+        public static final int search_circle_dialog_button_recommend=0x7f040009;
+        public static final int search_circle_dialog_button_trends=0x7f040008;
+        public static final int search_circle_dialog_message=0x7f040007;
+        /** Search circle overlay
+         */
+        public static final int search_circle_dialog_title=0x7f040006;
     }
 }

@@ -8,4 +8,12 @@
     <string name="main_error_mylocation">My Location Is Not Availible</string>
     <string name="main_error_services">Turn On Location Services</string>
     <string name="main_menu_circle">Draw a Circle</string>
+
+    <!--Search circle overlay-->
+    <string name="search_circle_dialog_title">Confirm Analysis?</string>
+    <string name="search_circle_dialog_message">Start Twitter flow analysis in specified area?</string>
+    <string name="search_circle_dialog_button_trends">Trends</string>
+    <string name="search_circle_dialog_button_recommend">Advice</string>
+    <string name="search_circle_dialog_button_cancel">Cancel</string>
+
 </resources>

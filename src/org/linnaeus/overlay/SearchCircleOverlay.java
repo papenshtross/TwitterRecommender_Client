@@ -1,14 +1,17 @@
 package org.linnaeus.overlay;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.*;
+import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
-import android.view.MotionEvent;
+import android.view.*;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.Projection;
 import org.linnaeus.R;
+import org.linnaeus.activity.MainActivity;
 
 import static android.graphics.Paint.Style;
 
@@ -21,24 +24,115 @@ import static android.graphics.Paint.Style;
  */
 public class SearchCircleOverlay extends Overlay {
 
+    //Old Style
     private Geocoder geoCoder = null;
-    private Context context;
+    private MainActivity view;
     private int selectedLatitude;
     private int selectedLongitude;
     private GeoPoint globalGeoPoint;
     private boolean draw = false;
 
-    public SearchCircleOverlay(Context context) {
+    //New Style
+    private static final int INVALID_POINTER_ID = -1;
+    private static final float MIN_CIRCLE_DIAMETER = 10.0f;
+    private static float MAX_CIRCLE_DIAMETER;
+
+    private Drawable mIcon;
+    private float mPosX;
+    private float mPosY;
+
+    private float mLastTouchX;
+    private float mLastTouchY;
+    private int mActivePointerId = INVALID_POINTER_ID;
+
+    private ScaleGestureDetector mScaleDetector;
+    private float mScaleFactor = 1.f;
+    private AlertDialog.Builder ad;
+
+    public SearchCircleOverlay(MainActivity view) {
         super();
-        this.context = context;
+        this.view = view;
+        mIcon = view.getResources().getDrawable(R.drawable.icon);
+        mIcon.setBounds(0, 0, mIcon.getIntrinsicWidth(), mIcon.getIntrinsicHeight());
+
+        mScaleDetector = new ScaleGestureDetector(view, new ScaleListener());
+
+        Display display = ((WindowManager) view.
+                getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+
+        MAX_CIRCLE_DIAMETER = display.getWidth();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent, MapView mapView) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_POINTER_DOWN){
+        // Let the ScaleGestureDetector inspect all events.
+        mScaleDetector.onTouchEvent(motionEvent);
 
+        final int action = motionEvent.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {
+        case MotionEvent.ACTION_DOWN: {
+            final float x = motionEvent.getX();
+            final float y = motionEvent.getY();
+
+            mPosX = x;
+            mPosY = y;
+            mLastTouchX = x;
+            mLastTouchY = y;
+            mActivePointerId = motionEvent.getPointerId(0);
+            break;
         }
-        return super.onTouchEvent(motionEvent, mapView);    //To change body of overridden methods use File | Settings | File Templates.
+
+        case MotionEvent.ACTION_MOVE: {
+            final int pointerIndex = motionEvent.findPointerIndex(mActivePointerId);
+            final float x = motionEvent.getX(pointerIndex);
+            final float y = motionEvent.getY(pointerIndex);
+
+            // Only move if the ScaleGestureDetector isn't processing a gesture.
+            if (!mScaleDetector.isInProgress()) {
+                final float dx = x - mLastTouchX;
+                final float dy = y - mLastTouchY;
+
+                mPosX += dx;
+                mPosY += dy;
+
+                //view.invalidate();
+            }
+
+            mLastTouchX = x;
+            mLastTouchY = y;
+
+            break;
+        }
+
+        case MotionEvent.ACTION_UP: {
+            mActivePointerId = INVALID_POINTER_ID;
+            if (mScaleFactor > MIN_CIRCLE_DIAMETER / 2){
+                showConfirmDialog();
+            }
+            break;
+        }
+
+        case MotionEvent.ACTION_CANCEL: {
+            mActivePointerId = INVALID_POINTER_ID;
+            break;
+        }
+
+        case MotionEvent.ACTION_POINTER_UP: {
+            final int pointerIndex = (motionEvent.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK)
+                    >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+            final int pointerId = motionEvent.getPointerId(pointerIndex);
+            if (pointerId == mActivePointerId) {
+                // This was our active pointer going up. Choose a new
+                // active pointer and adjust accordingly.
+                final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                mLastTouchX = motionEvent.getX(newPointerIndex);
+                mLastTouchY = motionEvent.getY(newPointerIndex);
+                mActivePointerId = motionEvent.getPointerId(newPointerIndex);
+            }
+            break;
+        }
+        }
+        return true;
     }
 
     @Override
@@ -53,30 +147,71 @@ public class SearchCircleOverlay extends Overlay {
     @Override
     public void draw(Canvas canvas, MapView mapV, boolean shadow){
 
-        if(shadow && draw){
-            Projection projection = mapV.getProjection();
-            Point pt = new Point();
-            projection.toPixels(globalGeoPoint, pt);
+        Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-            GeoPoint newGeos = new GeoPoint(selectedLatitude + (100), selectedLongitude); // adjust your radius accordingly
-            Point pt2 = new Point();
-            projection.toPixels(newGeos,pt2);
-            float circleRadius = Math.abs(pt2.y-pt.y);
+        circlePaint.setColor(0x30000000);
+        circlePaint.setStyle(Style.FILL_AND_STROKE);
+        canvas.drawCircle(mPosX, mPosY, mScaleFactor, circlePaint);
 
-            Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circlePaint.setColor(0x99000000);
+        circlePaint.setStyle(Style.STROKE);
+        canvas.drawCircle(mPosX, mPosY, mScaleFactor, circlePaint);
+        super.draw(canvas, mapV, shadow);
+    }
 
-            circlePaint.setColor(0x30000000);
-            circlePaint.setStyle(Style.FILL_AND_STROKE);
-            canvas.drawCircle((float)pt.x, (float)pt.y, circleRadius, circlePaint);
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mScaleFactor = detector.getCurrentSpan();
 
-            circlePaint.setColor(0x99000000);
-            circlePaint.setStyle(Style.STROKE);
-            canvas.drawCircle((float)pt.x, (float)pt.y, circleRadius, circlePaint);
+            // Don't let the object get too small or too large.
+            mScaleFactor = Math.max(MIN_CIRCLE_DIAMETER, Math.min(mScaleFactor, MAX_CIRCLE_DIAMETER)) / 2;
 
-            Bitmap markerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.emo_im_cool);
-            canvas.drawBitmap(markerBitmap,pt.x,pt.y-markerBitmap.getHeight(),null);
-
-            super.draw(canvas,mapV,shadow);
+            //view.invalidate();
+            return true;
         }
+    }
+
+    public void showConfirmDialog() {
+        if (ad == null){
+            ad = new AlertDialog.Builder(view);
+            ad.setTitle(view.getString(R.string.search_circle_dialog_title));
+            ad.setMessage(view.getString(R.string.search_circle_dialog_message));
+            ad.setPositiveButton(view.getString(R.string.search_circle_dialog_button_trends),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int arg1) {
+                            requestTrends();
+                        }
+                    });
+            ad.setNegativeButton(view.getString(R.string.search_circle_dialog_button_cancel),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int arg1) {
+                            cancelSearch();
+                        }
+                    });
+            ad.setNeutralButton(view.getString(R.string.search_circle_dialog_button_recommend),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int arg1) {
+                            requestRecommendation();
+                        }
+                    });
+        }
+        ad.show();
+    }
+
+    private void cancelSearch() {
+        removeSearchOverlay();
+    }
+
+    private void requestRecommendation() {
+        removeSearchOverlay();
+    }
+
+    private void requestTrends() {
+        removeSearchOverlay();
+    }
+
+    private void removeSearchOverlay(){
+        view.getMapView().getOverlays().remove(this);
     }
 }
