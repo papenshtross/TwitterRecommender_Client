@@ -24,27 +24,27 @@ public class CurrentLocationOverlay extends Overlay {
     }
 
     @Override
-        public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
-            GeoPoint location = MyLocation.getLastLocation();
-            if (location != null){
-                Paint paint = new Paint();
+    public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
+        GeoPoint location = MyLocation.getLastLocation();
+        if (location != null) {
+            Paint paint = new Paint();
 
-                super.draw(canvas, mapView, shadow);
-                // Converts lat/lng-Point to OUR coordinates on the screen.
-                Point myScreenCoords = new Point();
+            super.draw(canvas, mapView, shadow);
+            // Converts lat/lng-Point to OUR coordinates on the screen.
+            Point myScreenCoords = new Point();
 
-                mapView.getProjection().toPixels(location, myScreenCoords);
+            mapView.getProjection().toPixels(location, myScreenCoords);
 
-                paint.setStrokeWidth(1);
-                paint.setARGB(255, 255, 255, 255);
-                paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(1);
+            paint.setARGB(255, 255, 255, 255);
+            paint.setStyle(Paint.Style.STROKE);
 
-                Bitmap bmp = BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.emo_im_cool);
+            Bitmap bmp = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.emo_im_cool);
 
-                canvas.drawBitmap(bmp, myScreenCoords.x - bmp.getWidth() / 2,
-                        myScreenCoords.y - bmp.getHeight() / 2, paint);
-            }
-            return true;
+            canvas.drawBitmap(bmp, myScreenCoords.x - bmp.getWidth() / 2,
+                    myScreenCoords.y - bmp.getHeight() / 2, paint);
         }
+        return true;
     }
+}

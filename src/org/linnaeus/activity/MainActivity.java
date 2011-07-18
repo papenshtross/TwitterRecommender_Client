@@ -1,8 +1,5 @@
 package org.linnaeus.activity;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,9 +32,9 @@ public class MainActivity extends MapActivity {
         /* Give start condition (location/zoom) */
         mapController = mapView.getController();
 
-        locationResult = new MyLocation.LocationResult(){
-        public void gotLocation(final Location location){
-                if (location != null){
+        locationResult = new MyLocation.LocationResult() {
+            public void gotLocation(final Location location) {
+                if (location != null) {
                     double lat = location.getLatitude() * 1000000;
                     double lng = location.getLongitude() * 1000000;
                     GeoPoint geoPoint = new GeoPoint((int) lat, (int) lng);
@@ -45,7 +42,9 @@ public class MainActivity extends MapActivity {
                     mapController.animateTo(geoPoint);
                     mapController.setZoom(CURRENT_LOCATION_ZOOM_LEVEL);
                 }
-            };
+            }
+
+            ;
         };
 
         CurrentLocationOverlay myLocationOverlay = new CurrentLocationOverlay(getApplicationContext());
@@ -64,17 +63,17 @@ public class MainActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.my_location:
-            moveToMyLocation();
-            return true;
-        case R.id.help:
-            showHelp();
-            return true;
-        case R.id.circle:
-            drawCircle();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.my_location:
+                moveToMyLocation();
+                return true;
+            case R.id.help:
+                showHelp();
+                return true;
+            case R.id.circle:
+                drawCircle();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -85,16 +84,16 @@ public class MainActivity extends MapActivity {
     }
 
     private void moveToMyLocation() {
-        try{
-            if(!myLocation.getLocation(this, locationResult)){
+        try {
+            if (!myLocation.getLocation(this, locationResult)) {
                 showErrorLocationToast(getString(R.string.main_error_services));
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             showErrorLocationToast(getString(R.string.main_error_mylocation));
         }
     }
 
-    private void showErrorLocationToast(String text){
+    private void showErrorLocationToast(String text) {
         Toast.makeText(getApplicationContext(),
                 text, Toast.LENGTH_SHORT).show();
     }
@@ -104,7 +103,9 @@ public class MainActivity extends MapActivity {
     }
 
     @Override // Required by MapActivity
-    protected boolean isRouteDisplayed() { return false; }
+    protected boolean isRouteDisplayed() {
+        return false;
+    }
 
     public MapView getMapView() {
         return mapView;
