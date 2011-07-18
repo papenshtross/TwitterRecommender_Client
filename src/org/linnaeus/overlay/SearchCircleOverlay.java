@@ -41,6 +41,9 @@ public class SearchCircleOverlay extends Overlay {
     private float mPosX;
     private float mPosY;
 
+    private float firstPointerStartX;
+    private float firstPointerStartY;
+
     private float mLastTouchX;
     private float mLastTouchY;
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -74,11 +77,21 @@ public class SearchCircleOverlay extends Overlay {
             final float x = motionEvent.getX();
             final float y = motionEvent.getY();
 
-            mPosX = x;
-            mPosY = y;
+            firstPointerStartX = x;
+            firstPointerStartY = y;
             mLastTouchX = x;
             mLastTouchY = y;
             mActivePointerId = motionEvent.getPointerId(0);
+            break;
+        }
+
+        case MotionEvent.ACTION_POINTER_1_DOWN: {
+            final float x = motionEvent.getX(1);
+            final float y = motionEvent.getY(1);
+
+            mPosX = (firstPointerStartX + x) / 2;
+            mPosY = (firstPointerStartY + y) / 2;
+
             break;
         }
 

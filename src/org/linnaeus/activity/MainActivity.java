@@ -79,6 +79,7 @@ public class MainActivity extends MapActivity {
     }
 
     private void drawCircle() {
+        mapView.getOverlays().remove(searchCircleOverlay);
         searchCircleOverlay = new SearchCircleOverlay(this);
         mapView.getOverlays().add(searchCircleOverlay);
     }
