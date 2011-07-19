@@ -10,7 +10,10 @@ import com.google.android.maps.*;
 import org.linnaeus.R;
 import org.linnaeus.overlay.CurrentLocationOverlay;
 import org.linnaeus.overlay.SearchCircleOverlay;
+import org.linnaeus.restful.RestClient;
+import org.linnaeus.util.MainActivityContext;
 import org.linnaeus.util.MyLocation;
+import org.linnaeus.util.Properties;
 
 import java.util.List;
 
@@ -27,6 +30,9 @@ public class MainActivity extends MapActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        //Init context to allow static access throughout the application
+        MainActivityContext.getInstance().initContext(this);
+
         mapView = (MapView) findViewById(R.id.mapmain);
         mapView.setBuiltInZoomControls(true); // Attach zoom control
         /* Give start condition (location/zoom) */
@@ -42,9 +48,7 @@ public class MainActivity extends MapActivity {
                     mapController.animateTo(geoPoint);
                     mapController.setZoom(CURRENT_LOCATION_ZOOM_LEVEL);
                 }
-            }
-
-            ;
+            };
         };
 
         CurrentLocationOverlay myLocationOverlay = new CurrentLocationOverlay(getApplicationContext());

@@ -15,32 +15,38 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int circle=0x7f060002;
-        public static final int help=0x7f060003;
-        public static final int mapmain=0x7f060000;
-        public static final int my_location=0x7f060001;
+        public static final int circle=0x7f070002;
+        public static final int help=0x7f070003;
+        public static final int mapmain=0x7f070000;
+        public static final int my_location=0x7f070001;
     }
     public static final class layout {
         public static final int main=0x7f030000;
     }
     public static final class menu {
-        public static final int main_menu=0x7f050000;
+        public static final int main_menu=0x7f060000;
+    }
+    public static final class raw {
+        public static final int config=0x7f040000;
     }
     public static final class string {
-        public static final int app_name=0x7f040000;
-        public static final int main_error_mylocation=0x7f040003;
-        public static final int main_error_services=0x7f040004;
-        public static final int main_menu_circle=0x7f040005;
-        public static final int main_menu_help=0x7f040002;
+        public static final int app_name=0x7f050000;
+        public static final int main_error_mylocation=0x7f050003;
+        public static final int main_error_services=0x7f050004;
+        public static final int main_menu_circle=0x7f050005;
+        public static final int main_menu_help=0x7f050002;
         /** Main activity 
          */
-        public static final int main_menu_mylocation=0x7f040001;
-        public static final int search_circle_dialog_button_cancel=0x7f04000a;
-        public static final int search_circle_dialog_button_recommend=0x7f040009;
-        public static final int search_circle_dialog_button_trends=0x7f040008;
-        public static final int search_circle_dialog_message=0x7f040007;
+        public static final int main_menu_mylocation=0x7f050001;
+        /** Trends request
+         */
+        public static final int request_trends_error=0x7f05000b;
+        public static final int search_circle_dialog_button_cancel=0x7f05000a;
+        public static final int search_circle_dialog_button_recommend=0x7f050009;
+        public static final int search_circle_dialog_button_trends=0x7f050008;
+        public static final int search_circle_dialog_message=0x7f050007;
         /** Search circle overlay
          */
-        public static final int search_circle_dialog_title=0x7f040006;
+        public static final int search_circle_dialog_title=0x7f050006;
     }
 }

@@ -13,7 +13,7 @@ public class SearchCircle {
     private int lng;
     private int distance;
 
-    public float getLat() {
+    public int getLat() {
         return lat;
     }
 
@@ -21,7 +21,7 @@ public class SearchCircle {
         this.lat = lat;
     }
 
-    public float getLng() {
+    public int getLng() {
         return lng;
     }
 
@@ -29,7 +29,7 @@ public class SearchCircle {
         this.lng = lng;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 

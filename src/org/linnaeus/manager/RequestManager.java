@@ -1,7 +1,12 @@
 package org.linnaeus.manager;
 
 import android.content.Context;
+import android.widget.Toast;
+import org.linnaeus.R;
 import org.linnaeus.bean.SearchCircle;
+import org.linnaeus.restful.RestClient;
+import org.linnaeus.util.MainActivityContext;
+import org.linnaeus.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +32,15 @@ public class RequestManager {
     }
 
     public void requestTrends(SearchCircle searchCircle) {
-        //Request trends
+        try {
+            RestClient.sendCircleToService(searchCircle, Properties.getProperty(MainActivityContext
+                    .getInstance().getContext(), Properties.ANALYSER_SERVICE_URL_TRENDS));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivityContext.getInstance().getContext(),
+                    MainActivityContext.getInstance().getContext().getString(R.string.request_trends_error)
+                    , Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void requestRecommendation(SearchCircle searchCircle) {

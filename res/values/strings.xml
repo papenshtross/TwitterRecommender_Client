@@ -16,4 +16,6 @@
     <string name="search_circle_dialog_button_recommend">Advice</string>
     <string name="search_circle_dialog_button_cancel">Cancel</string>
 
+    <!--Trends request-->
+    <string name="request_trends_error">Trends can not be requested now</string>
 </resources>
