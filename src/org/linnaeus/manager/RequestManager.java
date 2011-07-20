@@ -1,12 +1,17 @@
 package org.linnaeus.manager;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 import org.linnaeus.R;
 import org.linnaeus.bean.SearchCircle;
+import org.linnaeus.bean.Trend;
 import org.linnaeus.restful.RestClient;
+import org.linnaeus.util.JsonParser;
 import org.linnaeus.util.MainActivityContext;
 import org.linnaeus.util.Properties;
+
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,19 +36,24 @@ public class RequestManager {
         this.context = context;
     }
 
-    public void requestTrends(SearchCircle searchCircle) {
+    public void requestTrends(SearchCircle searchCircle, ProgressDialog progressDialog) {
+        ArrayList<Trend> trends;
         try {
-            RestClient.sendCircleToService(searchCircle, Properties.getProperty(MainActivityContext
+            String jsonTrends = RestClient.sendCircleToService(searchCircle, Properties.getProperty(MainActivityContext
                     .getInstance().getContext(), Properties.ANALYSER_SERVICE_URL_TRENDS));
+            if (jsonTrends != null){
+                trends = JsonParser.parseTrendsFromJson(jsonTrends);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(MainActivityContext.getInstance().getContext(),
                     MainActivityContext.getInstance().getContext().getString(R.string.request_trends_error)
                     , Toast.LENGTH_SHORT).show();
         }
+        progressDialog.dismiss();
     }
 
-    public void requestRecommendation(SearchCircle searchCircle) {
+    public void requestRecommendation(SearchCircle searchCircle, ProgressDialog progressDialog) {
 
     }
 }

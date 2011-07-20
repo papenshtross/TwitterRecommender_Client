@@ -1,6 +1,7 @@
 package org.linnaeus.overlay;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -50,6 +51,8 @@ public class SearchCircleOverlay extends Overlay {
     private ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
     private AlertDialog.Builder ad;
+    private AlertDialog searchDialog;
+    private ProgressDialog progressDialog;
 
     public SearchCircleOverlay(MainActivity view) {
         super();
@@ -199,7 +202,8 @@ public class SearchCircleOverlay extends Overlay {
                         }
                     });
         }
-        ad.show();
+        searchDialog = ad.create();
+        searchDialog.show();
     }
 
     private void cancelSearch() {
@@ -209,16 +213,18 @@ public class SearchCircleOverlay extends Overlay {
     private void requestRecommendation() {
         removeSearchOverlay();
         SearchCircle searchCircle = getSearchCircle();
-        RequestManager.getInstance(view).requestRecommendation(searchCircle);
+        RequestManager.getInstance(view).requestRecommendation(searchCircle, progressDialog);
     }
 
     private void requestTrends() {
         removeSearchOverlay();
         SearchCircle searchCircle = getSearchCircle();
-        RequestManager.getInstance(view).requestTrends(searchCircle);
+        RequestManager.getInstance(view).requestTrends(searchCircle, progressDialog);
     }
 
     private void removeSearchOverlay() {
+        searchDialog.dismiss();
+        progressDialog = ProgressDialog.show(view, "Request", "Request in progress...");
         view.getMapView().getOverlays().remove(this);
     }
 

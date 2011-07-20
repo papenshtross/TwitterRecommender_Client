@@ -10,6 +10,15 @@ package org.linnaeus.bean;
 public class Trend {
 
     private String trend;
+    private int mentions;
+
+    public int getMentions() {
+        return mentions;
+    }
+
+    public void setMentions(int mentions) {
+        this.mentions = mentions;
+    }
 
     public String getTrend() {
         return trend;

@@ -61,11 +61,13 @@ public class RestClient {
         String result = null;
 
         HttpPost post = new HttpPost(serviceUrl);
+        post.setHeader("Content-type", "application/json");
         json.put("lat", searchCircle.getLat());
         json.put("lng", searchCircle.getLng());
         json.put("distance", searchCircle.getDistance());
-        StringEntity se = new StringEntity( "JSON: " + json.toString());
-        se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+        StringEntity se = new StringEntity(json.toString(), "UTF-8");
+
         post.setEntity(se);
 
         response = client.execute(post);
@@ -84,6 +86,7 @@ public class RestClient {
             InputStream instream = entity.getContent();
             result = convertStreamToString(instream);
             Log.i("Praeda",result);
+
 
             /*// A Simple JSONObject Creation
             json = new JSONObject(result);
@@ -107,80 +110,4 @@ public class RestClient {
         }
         return result;
     }
-
-   /* public static ArrayList<Trend> getTrends(SearchCircle searchCircle){
-        sendCircleToService(searchCircle, Properties.getProperty())
-        return null;
-    }
-
-    public static Advice getAdvice(SearchCircle searchCircle){
-        return null;
-    }*/
-
-
-	/* This is a test function which will connects to a given
-	 * rest service and prints it's response to Android Log with
-	 * labels "Praeda".
-	 */
-	public static void connect(String url)
-	{
-
-		HttpClient httpclient = new DefaultHttpClient();
-
-		// Prepare a request object
-		HttpGet httpget = new HttpGet(url); 
-
-		// Execute the request
-		HttpResponse response;
-		try {
-			response = httpclient.execute(httpget);
-			// Examine the response status
-			Log.i("Praeda",response.getStatusLine().toString());
-
-			// Get hold of the response entity
-			HttpEntity entity = response.getEntity();
-			// If the response does not enclose an entity, there is no need
-			// to worry about connection release
-
-			if (entity != null) {
-
-				// A Simple JSON Response Read
-				InputStream instream = entity.getContent();
-				String result= convertStreamToString(instream);
-				Log.i("Praeda",result);
-
-				// A Simple JSONObject Creation
-				JSONObject json=new JSONObject(result);
-				Log.i("Praeda","<jsonobject>\n"+json.toString()+"\n</jsonobject>");
-
-				// A Simple JSONObject Parsing
-				JSONArray nameArray=json.names();
-				JSONArray valArray=json.toJSONArray(nameArray);
-				for(int i=0;i<valArray.length();i++)
-				{
-					Log.i("Praeda","<jsonname"+i+">\n"+nameArray.getString(i)+"\n</jsonname"+i+">\n"
-							+"<jsonvalue"+i+">\n"+valArray.getString(i)+"\n</jsonvalue"+i+">");
-				}
-
-				// A Simple JSONObject Value Pushing
-				json.put("sample key", "sample value");
-				Log.i("Praeda","<jsonobject>\n"+json.toString()+"\n</jsonobject>");
-
-				// Closing the input stream will trigger connection release
-				instream.close();
-			}
-
-
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }
