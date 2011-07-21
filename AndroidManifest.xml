@@ -11,6 +11,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.TrendsActivity"
+                  android:label="@string/trends_activity_title"/>
         <uses-library android:name="com.google.android.maps" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />

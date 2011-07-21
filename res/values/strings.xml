@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ClientLite</string>
+    <string name="trends_activity_title">Trends</string>
 
     <!--Main activity -->
     <string name="main_menu_mylocation">My Location</string>
@@ -8,6 +9,8 @@
     <string name="main_error_mylocation">My Location Is Not Availible</string>
     <string name="main_error_services">Turn On Location Services</string>
     <string name="main_menu_circle">Draw a Circle</string>
+    <string name="main_progress_dialog_title">Search Request</string>
+    <string name="main_progress_dialog_text">Request in progress...</string>
 
     <!--Search circle overlay-->
     <string name="search_circle_dialog_title">Confirm Analysis?</string>
@@ -18,4 +21,11 @@
 
     <!--Trends request-->
     <string name="request_trends_error">Trends can not be requested now</string>
+
+    <!--Trends activity-->
+    <string name="trends_lat">Lat</string>
+    <string name="trends_lng">Lng</string>
+    <string name="trends_radius">Rad</string>
+    <string name="trends_units">m</string>
+
 </resources>

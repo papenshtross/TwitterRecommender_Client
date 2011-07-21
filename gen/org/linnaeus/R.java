@@ -15,13 +15,15 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int circle=0x7f070002;
-        public static final int help=0x7f070003;
+        public static final int circle=0x7f070003;
+        public static final int help=0x7f070004;
         public static final int mapmain=0x7f070000;
-        public static final int my_location=0x7f070001;
+        public static final int my_location=0x7f070002;
+        public static final int trendValue=0x7f070001;
     }
     public static final class layout {
         public static final int main=0x7f030000;
+        public static final int trend_list_item=0x7f030001;
     }
     public static final class menu {
         public static final int main_menu=0x7f060000;
@@ -31,22 +33,31 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f050000;
-        public static final int main_error_mylocation=0x7f050003;
-        public static final int main_error_services=0x7f050004;
-        public static final int main_menu_circle=0x7f050005;
-        public static final int main_menu_help=0x7f050002;
+        public static final int main_error_mylocation=0x7f050004;
+        public static final int main_error_services=0x7f050005;
+        public static final int main_menu_circle=0x7f050006;
+        public static final int main_menu_help=0x7f050003;
         /** Main activity 
          */
-        public static final int main_menu_mylocation=0x7f050001;
+        public static final int main_menu_mylocation=0x7f050002;
+        public static final int main_progress_dialog_text=0x7f050008;
+        public static final int main_progress_dialog_title=0x7f050007;
         /** Trends request
          */
-        public static final int request_trends_error=0x7f05000b;
-        public static final int search_circle_dialog_button_cancel=0x7f05000a;
-        public static final int search_circle_dialog_button_recommend=0x7f050009;
-        public static final int search_circle_dialog_button_trends=0x7f050008;
-        public static final int search_circle_dialog_message=0x7f050007;
+        public static final int request_trends_error=0x7f05000e;
+        public static final int search_circle_dialog_button_cancel=0x7f05000d;
+        public static final int search_circle_dialog_button_recommend=0x7f05000c;
+        public static final int search_circle_dialog_button_trends=0x7f05000b;
+        public static final int search_circle_dialog_message=0x7f05000a;
         /** Search circle overlay
          */
-        public static final int search_circle_dialog_title=0x7f050006;
+        public static final int search_circle_dialog_title=0x7f050009;
+        public static final int trends_activity_title=0x7f050001;
+        /** Trends activity
+         */
+        public static final int trends_lat=0x7f05000f;
+        public static final int trends_lng=0x7f050010;
+        public static final int trends_radius=0x7f050011;
+        public static final int trends_units=0x7f050012;
     }
 }

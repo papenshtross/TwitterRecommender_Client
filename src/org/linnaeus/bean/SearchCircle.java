@@ -1,5 +1,7 @@
 package org.linnaeus.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Romchee
@@ -7,7 +9,9 @@ package org.linnaeus.bean;
  * Time: 10:47
  * To change this template use File | Settings | File Templates.
  */
-public class SearchCircle {
+public class SearchCircle implements Serializable{
+
+    public static String SERIALIZABLE_NAME = "search_circle";
 
     private int lat;
     private int lng;

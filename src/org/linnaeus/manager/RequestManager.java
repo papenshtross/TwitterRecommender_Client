@@ -1,9 +1,12 @@
 package org.linnaeus.manager;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 import org.linnaeus.R;
+import org.linnaeus.activity.TrendsActivity;
 import org.linnaeus.bean.SearchCircle;
 import org.linnaeus.bean.Trend;
 import org.linnaeus.restful.RestClient;
@@ -24,36 +27,41 @@ public class RequestManager {
 
     private static RequestManager instance;
     private Context context;
+    public static String TRENDS_REQUEST_PARCELABLE_NAME = "trends";
 
-    public static RequestManager getInstance(Context context) {
+    public static RequestManager getInstance() {
         if (instance == null) {
-            instance = new RequestManager(context);
+            instance = new RequestManager();
         }
         return instance;
     }
 
-    public RequestManager(Context context) {
-        this.context = context;
+    public RequestManager() {
+        this.context = MainActivityContext.getInstance().getContext();
     }
 
-    public void requestTrends(SearchCircle searchCircle, ProgressDialog progressDialog) {
-        ArrayList<Trend> trends;
+    public void requestTrends(SearchCircle searchCircle) {
+        ArrayList<Trend> trends = null;
         try {
-            String jsonTrends = RestClient.sendCircleToService(searchCircle, Properties.getProperty(MainActivityContext
-                    .getInstance().getContext(), Properties.ANALYSER_SERVICE_URL_TRENDS));
+            String jsonTrends = RestClient.sendCircleToService(searchCircle, Properties.getProperty(context,
+                    Properties.ANALYSER_SERVICE_URL_TRENDS));
             if (jsonTrends != null){
                 trends = JsonParser.parseTrendsFromJson(jsonTrends);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(MainActivityContext.getInstance().getContext(),
-                    MainActivityContext.getInstance().getContext().getString(R.string.request_trends_error)
+            Toast.makeText(context, context.getString(R.string.request_trends_error)
                     , Toast.LENGTH_SHORT).show();
         }
-        progressDialog.dismiss();
+        if (trends != null){
+            Intent intent = new Intent(context, TrendsActivity.class);
+            intent.putParcelableArrayListExtra(TRENDS_REQUEST_PARCELABLE_NAME, trends);
+            intent.putExtra(SearchCircle.SERIALIZABLE_NAME, searchCircle);
+            context.startActivity(intent);
+        }
     }
 
-    public void requestRecommendation(SearchCircle searchCircle, ProgressDialog progressDialog) {
+    public void requestRecommendation(SearchCircle searchCircle) {
 
     }
 }

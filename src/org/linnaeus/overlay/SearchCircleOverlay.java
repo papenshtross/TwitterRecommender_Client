@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.WindowManager;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import org.linnaeus.R;
@@ -31,7 +32,7 @@ import static android.graphics.Paint.Style;
  */
 public class SearchCircleOverlay extends Overlay {
 
-    private MainActivity view;
+    private MapActivity view;
 
     private static final int INVALID_POINTER_ID = -1;
     private static final float MIN_CIRCLE_DIAMETER = 10.0f;
@@ -50,9 +51,9 @@ public class SearchCircleOverlay extends Overlay {
 
     private ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
-    private AlertDialog.Builder ad;
+    /*private AlertDialog.Builder ad;
     private AlertDialog searchDialog;
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;*/
 
     public SearchCircleOverlay(MainActivity view) {
         super();
@@ -122,7 +123,7 @@ public class SearchCircleOverlay extends Overlay {
             case MotionEvent.ACTION_UP: {
                 mActivePointerId = INVALID_POINTER_ID;
                 if (mScaleFactor > MIN_CIRCLE_DIAMETER / 2) {
-                    showConfirmDialog();
+                    view.showDialog(MainActivity.SEARCH_DIALOG);
                 }
                 break;
             }
@@ -178,7 +179,7 @@ public class SearchCircleOverlay extends Overlay {
         }
     }
 
-    public void showConfirmDialog() {
+   /* public void showConfirmDialog() {
         if (ad == null) {
             ad = new AlertDialog.Builder(view);
             ad.setTitle(view.getString(R.string.search_circle_dialog_title));
@@ -213,27 +214,25 @@ public class SearchCircleOverlay extends Overlay {
     private void requestRecommendation() {
         removeSearchOverlay();
         SearchCircle searchCircle = getSearchCircle();
-        RequestManager.getInstance(view).requestRecommendation(searchCircle, progressDialog);
+        RequestManager.getInstance().requestRecommendation(searchCircle, progressDialog);
     }
 
     private void requestTrends() {
         removeSearchOverlay();
         SearchCircle searchCircle = getSearchCircle();
-        RequestManager.getInstance(view).requestTrends(searchCircle, progressDialog);
+        RequestManager.getInstance().requestTrends(searchCircle, progressDialog);
     }
 
     private void removeSearchOverlay() {
         searchDialog.dismiss();
         progressDialog = ProgressDialog.show(view, "Request", "Request in progress...");
         view.getMapView().getOverlays().remove(this);
-    }
+    }*/
 
-    private SearchCircle getSearchCircle() {
+    public SearchCircle getSearchCircle(MapView view) {
         SearchCircle searchCircle = new SearchCircle();
-        GeoPoint circleCenter = view.getMapView().
-                getProjection().fromPixels((int) mPosX, (int) mPosY);
-        GeoPoint circleHoop = view.getMapView().
-                getProjection().fromPixels((int) (mPosX + mScaleFactor), (int) mPosY);
+        GeoPoint circleCenter = view.getProjection().fromPixels((int) mPosX, (int) mPosY);
+        GeoPoint circleHoop = view.getProjection().fromPixels((int) (mPosX + mScaleFactor), (int) mPosY);
         int radiusInMeters = LocationUtils.
                 distanceBetweenGeoPoints(circleCenter, circleHoop);
         searchCircle.setLat(circleCenter.getLatitudeE6());
