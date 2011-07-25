@@ -3,6 +3,7 @@ package org.linnaeus.restful;
 import java.io.*;
 import java.util.ArrayList;
 
+import android.os.Looper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -55,6 +56,7 @@ public class RestClient {
 
     public static String sendCircleToService(SearchCircle searchCircle, String serviceUrl) throws Exception{
 
+        Looper.prepare();
         HttpClient client = new DefaultHttpClient();
         JSONObject json = new JSONObject();
         HttpResponse response;

@@ -41,7 +41,7 @@ public class RequestManager {
     }
 
     public void requestTrends(SearchCircle searchCircle) {
-        ArrayList<Trend> trends = null;
+        ArrayList<Trend> trends = new ArrayList<Trend>();
         try {
             String jsonTrends = RestClient.sendCircleToService(searchCircle, Properties.getProperty(context,
                     Properties.ANALYSER_SERVICE_URL_TRENDS));
@@ -53,12 +53,10 @@ public class RequestManager {
             Toast.makeText(context, context.getString(R.string.request_trends_error)
                     , Toast.LENGTH_SHORT).show();
         }
-        if (trends != null){
-            Intent intent = new Intent(context, TrendsActivity.class);
-            intent.putParcelableArrayListExtra(TRENDS_REQUEST_PARCELABLE_NAME, trends);
-            intent.putExtra(SearchCircle.SERIALIZABLE_NAME, searchCircle);
-            context.startActivity(intent);
-        }
+        Intent intent = new Intent(context, TrendsActivity.class);
+        intent.putParcelableArrayListExtra(TRENDS_REQUEST_PARCELABLE_NAME, trends);
+        intent.putExtra(SearchCircle.SERIALIZABLE_NAME, searchCircle);
+        context.startActivity(intent);
     }
 
     public void requestRecommendation(SearchCircle searchCircle) {
