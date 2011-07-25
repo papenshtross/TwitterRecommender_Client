@@ -197,7 +197,7 @@ public class MainActivity extends MapActivity {
 
 		@Override
 		protected Void doInBackground(Integer... request) {
-            SearchCircle searchCircle = searchCircleOverlay.getSearchCircle(getMapView());
+            SearchCircle searchCircle = searchCircleOverlay.getSearchCircle();
             switch (request[0]){
                 case REQUEST_TRENDS:
                     RequestManager.getInstance().requestTrends(searchCircle);
