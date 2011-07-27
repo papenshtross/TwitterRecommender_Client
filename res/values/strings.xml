@@ -27,5 +27,6 @@
     <string name="trends_lng">Lng</string>
     <string name="trends_radius">Rad</string>
     <string name="trends_units">m</string>
+    <string name="trends_google_it">Google It?</string>
 
 </resources>

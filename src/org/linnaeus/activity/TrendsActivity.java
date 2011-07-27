@@ -1,23 +1,20 @@
 package org.linnaeus.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.Context;
+import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.*;
 import org.linnaeus.R;
 import org.linnaeus.bean.SearchCircle;
 import org.linnaeus.bean.Trend;
 import org.linnaeus.manager.RequestManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,6 +24,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class TrendsActivity extends ListActivity {
+
+    public static final int APPROVE_DIALOG = 1;
+    private String textToGoogle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class TrendsActivity extends ListActivity {
         setTitle(buildTrendsTitle(searchCircle));
     }
 
-    private String buildTrendsTitle(SearchCircle searchCircle){
+    private String buildTrendsTitle(SearchCircle searchCircle) {
         StringBuilder title = new StringBuilder();
         title.append(getString(R.string.trends_lat)).append(": ").append(searchCircle.getLat()).append(" ");
         title.append(getString(R.string.trends_lng)).append(": ").append(searchCircle.getLng()).append(" ");
@@ -56,8 +56,35 @@ public class TrendsActivity extends ListActivity {
     private class ItemClick implements AdapterView.OnItemClickListener {
 
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            //To change body of implemented methods use File | Settings | File Templates.
+            textToGoogle = String.valueOf(((TextView) view).getText());
+            showDialog(APPROVE_DIALOG);
         }
+    }
+
+    @Override
+    public Dialog onCreateDialog(int id) {
+        switch (id) {
+            case (APPROVE_DIALOG):
+                AlertDialog.Builder ad = new AlertDialog.Builder(this);
+                ad.setTitle(getString(R.string.trends_google_it));
+                ad.setMessage(getString(R.string.trends_google_it));
+                ad.setPositiveButton("Google",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
+                                search.putExtra(SearchManager.QUERY, textToGoogle);
+                                startActivity(search);
+                            }
+                        });
+                ad.setNegativeButton(getString(R.string.search_circle_dialog_button_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                dismissDialog(APPROVE_DIALOG);
+                            }
+                        });
+                return ad.create();
+        }
+        return null;
     }
 
     /*private class TrendAdapter extends ArrayAdapter<String> {

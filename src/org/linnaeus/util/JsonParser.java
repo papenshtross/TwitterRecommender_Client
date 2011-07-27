@@ -18,6 +18,7 @@ public class JsonParser {
 
     private static final String MENTIONS = "mentions";
     private static final String VALUE = "value";
+    private static final String TREND_OBJECT = "trend";
 
     /*
     ***Json response format***
@@ -34,14 +35,23 @@ public class JsonParser {
     public static ArrayList<Trend> parseTrendsFromJson(String jsonString) throws JSONException {
         ArrayList<Trend> trends = new ArrayList<Trend>();
         JSONObject json = new JSONObject(jsonString);
-        JSONArray values = json.getJSONArray("trend");
-        for (int i = 0; i < values.length(); i++){
-            Trend trend = new Trend();
-            JSONObject jsonTrend = values.getJSONObject(i);
-            trend.setMentions(jsonTrend.getInt(MENTIONS));
-            trend.setTrend(jsonTrend.getString(VALUE));
-            trends.add(trend);
+        try {
+            JSONArray values = json.getJSONArray(TREND_OBJECT);
+            for (int i = 0; i < values.length(); i++){
+                JSONObject jsonTrend = values.getJSONObject(i);
+                trends.add(newTrendFromJson(jsonTrend));
+            }
+        } catch (JSONException e){
+            JSONObject value = json.getJSONObject(TREND_OBJECT);
+            trends.add(newTrendFromJson(value));
         }
         return trends;
+    }
+
+    private static Trend newTrendFromJson(JSONObject jsonTrend) throws JSONException{
+        Trend trend = new Trend();
+        trend.setMentions(jsonTrend.getInt(MENTIONS));
+        trend.setTrend(jsonTrend.getString(VALUE));
+        return trend;
     }
 }

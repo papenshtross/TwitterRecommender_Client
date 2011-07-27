@@ -53,6 +53,7 @@ public final class R {
          */
         public static final int search_circle_dialog_title=0x7f050009;
         public static final int trends_activity_title=0x7f050001;
+        public static final int trends_google_it=0x7f050013;
         /** Trends activity
          */
         public static final int trends_lat=0x7f05000f;
