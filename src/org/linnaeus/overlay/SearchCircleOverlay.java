@@ -1,9 +1,6 @@
 package org.linnaeus.overlay;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -18,7 +15,6 @@ import com.google.android.maps.Overlay;
 import org.linnaeus.R;
 import org.linnaeus.activity.MainActivity;
 import org.linnaeus.bean.SearchCircle;
-import org.linnaeus.manager.RequestManager;
 import org.linnaeus.util.LocationUtils;
 
 import static android.graphics.Paint.Style;

@@ -36,6 +36,9 @@
     <!--Trends request-->
     <string name="request_trends_error">Trends can not be requested now</string>
 
+    <!--Advices request-->
+    <string name="request_advices_error">Recommendations can not be requested now</string>
+
     <!--Trends activity-->
     <string name="trends_lat">Lat</string>
     <string name="trends_lng">Lng</string>

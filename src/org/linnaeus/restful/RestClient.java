@@ -1,32 +1,29 @@
 package org.linnaeus.restful;
 
-import java.io.*;
-import java.util.ArrayList;
-
 import android.os.Looper;
+import android.util.Log;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
-import org.linnaeus.bean.Advice;
 import org.linnaeus.bean.SearchCircle;
-import org.linnaeus.bean.Trend;
-import org.linnaeus.util.Properties;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class RestClient {
 
-	private static String convertStreamToString(InputStream is) {
+    public static final String LAT = "lat";
+    public static final String LNG = "lng";
+    public static final String DISTANCE = "distance";
+    public static final String ADVICE_REQUEST = "adviceRequest";
+
+    private static String convertStreamToString(InputStream is) {
 		/*
 		 * To convert the InputStream to String we use the BufferedReader.readLine()
 		 * method. We iterate until the BufferedReader return null which means
@@ -36,7 +33,7 @@ public class RestClient {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 
-		String line = null;
+		String line;
 		try {
 			while ((line = reader.readLine()) != null) {
 				sb.append(line + "\n");
@@ -54,8 +51,8 @@ public class RestClient {
 		return sb.toString();
 	}
 
-    public static String sendCircleToService(SearchCircle searchCircle, String serviceUrl) throws Exception{
-
+    public static String sendCircleToService(SearchCircle searchCircle
+                    , String serviceUrl, String... params) throws Exception{
         Looper.prepare();
         HttpClient client = new DefaultHttpClient();
         JSONObject json = new JSONObject();
@@ -64,9 +61,13 @@ public class RestClient {
 
         HttpPost post = new HttpPost(serviceUrl);
         post.setHeader("Content-type", "application/json");
-        json.put("lat", searchCircle.getLat());
-        json.put("lng", searchCircle.getLng());
-        json.put("distance", searchCircle.getDistance());
+        json.put(LAT, searchCircle.getLat());
+        json.put(LNG, searchCircle.getLng());
+        json.put(DISTANCE, searchCircle.getDistance());
+
+        if (params != null){
+           json.put(ADVICE_REQUEST, params[0]);
+        }
 
         StringEntity se = new StringEntity(json.toString(), "UTF-8");
 

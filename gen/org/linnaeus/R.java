@@ -52,6 +52,9 @@ public final class R {
         public static final int main_menu_mylocation=0x7f060002;
         public static final int main_progress_dialog_text=0x7f060008;
         public static final int main_progress_dialog_title=0x7f060007;
+        /** Advices request
+         */
+        public static final int request_advices_error=0x7f060019;
         /** Trends request
          */
         public static final int request_trends_error=0x7f060018;
@@ -63,14 +66,14 @@ public final class R {
          */
         public static final int search_circle_dialog_title=0x7f060013;
         public static final int trends_activity_title=0x7f060001;
-        public static final int trends_google_button=0x7f06001e;
-        public static final int trends_google_it=0x7f06001d;
+        public static final int trends_google_button=0x7f06001f;
+        public static final int trends_google_it=0x7f06001e;
         /** Trends activity
          */
-        public static final int trends_lat=0x7f060019;
-        public static final int trends_lng=0x7f06001a;
-        public static final int trends_radius=0x7f06001b;
-        public static final int trends_units=0x7f06001c;
+        public static final int trends_lat=0x7f06001a;
+        public static final int trends_lng=0x7f06001b;
+        public static final int trends_radius=0x7f06001c;
+        public static final int trends_units=0x7f06001d;
     }
     public static final class xml {
         public static final int categories=0x7f040000;

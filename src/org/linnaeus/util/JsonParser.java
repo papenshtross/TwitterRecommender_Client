@@ -3,6 +3,7 @@ package org.linnaeus.util;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.linnaeus.bean.Advice;
 import org.linnaeus.bean.Trend;
 
 import java.util.ArrayList;
@@ -18,7 +19,38 @@ public class JsonParser {
 
     private static final String MENTIONS = "mentions";
     private static final String VALUE = "value";
+    private static final String ADVICE_NAME = "name";
+    private static final String ADVICE_DESCRIPTION = "description";
+    private static final String ADVICE_RATING = "rating";
     private static final String TREND_OBJECT = "trend";
+    private static final String ADVICE_OBJECT = "advice";
+
+    /*
+    ***Json response format***
+    *
+    {"advice":
+        [
+        {"description":"test","name":"Shops","rating":"4.5"},
+        {"description":"test2","name":"Shops","rating":"3.5"}
+        ]
+    }
+    */
+
+    public static ArrayList<Advice> parseAdvicesFromJson(String jsonString) throws JSONException {
+        ArrayList<Advice> advices = new ArrayList<Advice>();
+        JSONObject json = new JSONObject(jsonString);
+        try {
+            JSONArray values = json.getJSONArray(ADVICE_OBJECT);
+            for (int i = 0; i < values.length(); i++){
+                JSONObject jsonAdvice = values.getJSONObject(i);
+                advices.add(newAdviceFromJson(jsonAdvice));
+            }
+        } catch (JSONException e){
+            JSONObject value = json.getJSONObject(ADVICE_OBJECT);
+            advices.add(newAdviceFromJson(value));
+        }
+        return advices;
+    }
 
     /*
     ***Json response format***
@@ -53,5 +85,13 @@ public class JsonParser {
         trend.setMentions(jsonTrend.getInt(MENTIONS));
         trend.setTrend(jsonTrend.getString(VALUE));
         return trend;
+    }
+
+     private static Advice newAdviceFromJson(JSONObject jsonAdvice) throws JSONException{
+        Advice advice = new Advice();
+        advice.setName(jsonAdvice.getString(ADVICE_NAME));
+        advice.setDescription(jsonAdvice.getString(ADVICE_DESCRIPTION));
+        advice.setRating(jsonAdvice.getDouble(ADVICE_RATING));
+        return advice;
     }
 }

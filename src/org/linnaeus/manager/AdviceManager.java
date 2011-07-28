@@ -1,15 +1,7 @@
 package org.linnaeus.manager;
 
-import org.linnaeus.bean.Advice;
 import org.linnaeus.util.XmlParser;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**

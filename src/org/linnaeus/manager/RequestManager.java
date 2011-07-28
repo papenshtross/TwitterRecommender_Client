@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 import org.linnaeus.R;
+import org.linnaeus.activity.AdviceActivity;
 import org.linnaeus.activity.TrendsActivity;
+import org.linnaeus.bean.Advice;
 import org.linnaeus.bean.SearchCircle;
 import org.linnaeus.bean.Trend;
 import org.linnaeus.restful.RestClient;
@@ -26,6 +28,7 @@ public class RequestManager {
     private static RequestManager instance;
     private Context context;
     public static String TRENDS_REQUEST_PARCELABLE_NAME = "trends";
+    public static String ADVICES_REQUEST_PARCELABLE_NAME = "advices";
 
     public static RequestManager getInstance() {
         if (instance == null) {
@@ -57,7 +60,22 @@ public class RequestManager {
         context.startActivity(intent);
     }
 
-    public void requestRecommendation(SearchCircle searchCircle) {
-
+    public void requestRecommendation(SearchCircle searchCircle, String value) {
+        ArrayList<Advice> advices = new ArrayList<Advice>();
+        try {
+            String jsonAdvices = RestClient.sendCircleToService(searchCircle, Properties.getProperty(context,
+                    Properties.ANALYSER_SERVICE_URL_ADVICE), value);
+            if (jsonAdvices != null){
+                advices = JsonParser.parseAdvicesFromJson(jsonAdvices);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, context.getString(R.string.request_advices_error)
+                    , Toast.LENGTH_SHORT).show();
+        }
+        Intent intent = new Intent(context, AdviceActivity.class);
+        intent.putParcelableArrayListExtra(ADVICES_REQUEST_PARCELABLE_NAME, advices);
+        intent.putExtra(SearchCircle.SERIALIZABLE_NAME, searchCircle);
+        context.startActivity(intent);
     }
 }

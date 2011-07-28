@@ -1,6 +1,5 @@
 package org.linnaeus.util;
 
-import android.app.Activity;
 import android.content.Context;
 
 /**

@@ -19,14 +19,9 @@ import org.linnaeus.manager.AdviceManager;
 import org.linnaeus.manager.RequestManager;
 import org.linnaeus.overlay.CurrentLocationOverlay;
 import org.linnaeus.overlay.SearchCircleOverlay;
-import org.linnaeus.restful.RestClient;
-import org.linnaeus.util.LocationUtils;
 import org.linnaeus.util.MainActivityContext;
 import org.linnaeus.util.MyLocation;
-import org.linnaeus.util.Properties;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends MapActivity {
@@ -237,12 +232,12 @@ public class MainActivity extends MapActivity {
     }
 
     private void requestRecommendation(String value) {
-        new SearchRequest().execute(REQUEST_ADVICE);
+        new SearchRequest().execute(String.valueOf(REQUEST_ADVICE), value);
         removeSearchOverlay();
     }
 
     private void requestTrends() {
-        new SearchRequest().execute(REQUEST_TRENDS);
+        new SearchRequest().execute(String.valueOf(REQUEST_ADVICE));
         removeSearchOverlay();
     }
 
@@ -251,7 +246,7 @@ public class MainActivity extends MapActivity {
         getMapView().getOverlays().remove(searchCircleOverlay);
     }
 
-    class SearchRequest extends AsyncTask<Integer, String, Void> {
+    class SearchRequest extends AsyncTask<String, String, Void> {
 
 		@Override
 		protected void onPreExecute() {
@@ -260,14 +255,14 @@ public class MainActivity extends MapActivity {
 		}
 
 		@Override
-		protected Void doInBackground(Integer... request) {
+		protected Void doInBackground(String... request) {
             SearchCircle searchCircle = searchCircleOverlay.getSearchCircle();
-            switch (request[0]){
+            switch (Integer.valueOf(request[0])){
                 case REQUEST_TRENDS:
                     RequestManager.getInstance().requestTrends(searchCircle);
                     break;
                 case REQUEST_ADVICE:
-                    RequestManager.getInstance().requestRecommendation(searchCircle);
+                    RequestManager.getInstance().requestRecommendation(searchCircle, request[1]);
                     break;
             }
 			return null;
