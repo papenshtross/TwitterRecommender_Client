@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.maps.*;
 import org.linnaeus.R;
 import org.linnaeus.bean.SearchCircle;
+import org.linnaeus.manager.AdviceManager;
 import org.linnaeus.manager.RequestManager;
 import org.linnaeus.overlay.CurrentLocationOverlay;
 import org.linnaeus.overlay.SearchCircleOverlay;
@@ -32,7 +34,10 @@ public class MainActivity extends MapActivity {
     private static final int CURRENT_LOCATION_ZOOM_LEVEL = 10;
 
     public static final int SEARCH_DIALOG = 1;
-    public static final int PROGRESS_DIALOG = 2;
+    public static final int ADVICE_DIALOG = 2;
+    public static final int PROGRESS_DIALOG = 3;
+    public static final int KEYWORD_DIALOG = 4;
+    public static final int CATEGORY_DIALOG = 5;
 
     public final int REQUEST_TRENDS = 1;
     public final int REQUEST_ADVICE = 2;
@@ -42,6 +47,7 @@ public class MainActivity extends MapActivity {
     private MyLocation.LocationResult locationResult;
     private MapView mapView;
     private SearchCircleOverlay searchCircleOverlay;
+    private int currentCategory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,16 +160,74 @@ public class MainActivity extends MapActivity {
                 ad.setNeutralButton(getString(R.string.search_circle_dialog_button_recommend),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int arg1) {
-                                requestRecommendation();
+                                showDialog(ADVICE_DIALOG);
                             }
                         });
                 return ad.create();
+            case (ADVICE_DIALOG) :
+                AlertDialog.Builder adviceDialog = new AlertDialog.Builder(this);
+                adviceDialog.setTitle(getString(R.string.main_advice_dialog_title));
+                adviceDialog.setMessage(getString(R.string.main_advice_dialog_text));
+                adviceDialog.setPositiveButton(getString(R.string.main_advice_dialog_keyword_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                showDialog(KEYWORD_DIALOG);
+                            }
+                        });
+                adviceDialog.setNegativeButton(getString(R.string.main_advice_dialog_category_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                showDialog(CATEGORY_DIALOG);
+                            }
+                        });
+                return adviceDialog.create();
             case (PROGRESS_DIALOG) :
                 ProgressDialog dialog = new ProgressDialog(this);
                 dialog.setTitle(getString(R.string.main_progress_dialog_title));
                 dialog.setMessage(getString(R.string.main_progress_dialog_text));
                 dialog.show();
                 return dialog;
+            case (KEYWORD_DIALOG) :
+                AlertDialog.Builder keywordDialog = new AlertDialog.Builder(this);
+                keywordDialog.setTitle(getString(R.string.main_keyword_dialog_title));
+                final EditText input = new EditText(this);
+                keywordDialog.setView(input);
+                keywordDialog.setPositiveButton(getString(R.string.main_keyword_dialog_request_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                String value = input.getText().toString();
+                                requestRecommendation(value);
+                            }
+                        });
+                keywordDialog.setNegativeButton(getString(R.string.main_keyword_dialog_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                cancelSearch();
+                            }
+                        });
+                return keywordDialog.create();
+            case (CATEGORY_DIALOG) :
+                AlertDialog.Builder categoryDialog = new AlertDialog.Builder(this);
+                categoryDialog.setTitle(getString(R.string.main_category_dialog_title));
+                final String[] categories = AdviceManager.getInstance().getCategories();
+                categoryDialog.setSingleChoiceItems(categories, -1, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                setCurrentCategory(item);
+                            }
+                        });
+                categoryDialog.setPositiveButton(getString(R.string.main_category_dialog_request_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                requestRecommendation(categories[currentCategory]);
+                            }
+                        });
+                categoryDialog.setNegativeButton(getString(R.string.main_keyword_dialog_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                cancelSearch();
+                            }
+                        });
+                return categoryDialog.create();
         }
         return null;
     }
@@ -172,7 +236,7 @@ public class MainActivity extends MapActivity {
         removeSearchOverlay();
     }
 
-    private void requestRecommendation() {
+    private void requestRecommendation(String value) {
         new SearchRequest().execute(REQUEST_ADVICE);
         removeSearchOverlay();
     }
@@ -214,4 +278,12 @@ public class MainActivity extends MapActivity {
 			dismissDialog(PROGRESS_DIALOG);
 		}
 	}
+
+    public int getCurrentCategory() {
+        return currentCategory;
+    }
+
+    public void setCurrentCategory(int currentCategory) {
+        this.currentCategory = currentCategory;
+    }
 }

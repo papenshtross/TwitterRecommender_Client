@@ -68,7 +68,7 @@ public class TrendsActivity extends ListActivity {
                 AlertDialog.Builder ad = new AlertDialog.Builder(this);
                 ad.setTitle(getString(R.string.trends_google_it));
                 ad.setMessage(getString(R.string.trends_google_it));
-                ad.setPositiveButton("Google",
+                ad.setPositiveButton(getString(R.string.trends_google_button),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int arg1) {
                                 Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
