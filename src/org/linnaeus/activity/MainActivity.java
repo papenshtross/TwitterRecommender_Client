@@ -237,7 +237,7 @@ public class MainActivity extends MapActivity {
     }
 
     private void requestTrends() {
-        new SearchRequest().execute(String.valueOf(REQUEST_ADVICE));
+        new SearchRequest().execute(String.valueOf(REQUEST_TRENDS));
         removeSearchOverlay();
     }
 

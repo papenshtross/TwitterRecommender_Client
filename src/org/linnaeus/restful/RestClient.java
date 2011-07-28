@@ -65,7 +65,7 @@ public class RestClient {
         json.put(LNG, searchCircle.getLng());
         json.put(DISTANCE, searchCircle.getDistance());
 
-        if (params != null){
+        if (params.length > 0){
            json.put(ADVICE_REQUEST, params[0]);
         }
 

@@ -71,7 +71,7 @@ public class Advice implements Parcelable{
 
     @Override
     public String toString() {
-        return name + "/n" + description
-                + "/n" + "Rating: " + rating;
+        return name + "\n" + description
+                + "\n" + "Rating: " + rating;
     }
 }
