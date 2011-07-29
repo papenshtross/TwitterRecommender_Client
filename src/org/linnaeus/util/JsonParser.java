@@ -17,13 +17,66 @@ import java.util.ArrayList;
  */
 public class JsonParser {
 
+    //Trends constants
     private static final String MENTIONS = "mentions";
     private static final String VALUE = "value";
+    private static final String TREND_OBJECT = "trend";
+    //Advices constants
     private static final String ADVICE_NAME = "name";
     private static final String ADVICE_DESCRIPTION = "description";
     private static final String ADVICE_RATING = "rating";
-    private static final String TREND_OBJECT = "trend";
     private static final String ADVICE_OBJECT = "advice";
+    //FB constants
+    private static final String FB_DATA = "data";
+    private static final String FB_NAME = "name";
+    private static final String FB_CATEGORY = "category";
+
+     /*
+    ***Json response format***
+    *
+    {
+   "data": [
+      {
+         "name": "Artificial intelligence",
+         "category": "Interest",
+         "id": "108369822520186",
+         "created_time": "2011-07-29T11:40:53+0000"
+      },
+      {
+         "name": "Ronnie Coleman",
+         "category": "Athlete",
+         "id": "108629919160691",
+         "created_time": "2011-07-29T11:39:59+0000"
+      },
+       */
+
+    public static ArrayList<String> parseFBInterestsFromJson(JSONObject jsonObject, String ... categoriesToImport){
+        ArrayList<String> interests = new ArrayList<String>();
+        try {
+            JSONArray values = jsonObject.getJSONArray(FB_DATA);
+            for (int i = 0; i < values.length(); i++){
+                JSONObject jsonLikes = values.getJSONObject(i);
+                addCategoryToInterest(interests, jsonLikes, categoriesToImport);
+            }
+        } catch (JSONException e){
+            try {
+                JSONObject value = jsonObject.getJSONObject(FB_DATA);
+                addCategoryToInterest(interests, value, categoriesToImport);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return interests;
+    }
+
+    private static void addCategoryToInterest(ArrayList<String> interests
+            , JSONObject jsonLikes, String ... categoriesToImport) throws JSONException{
+        for (String category : categoriesToImport){
+            if (category.equals(jsonLikes.getString(FB_CATEGORY))){
+                interests.add(jsonLikes.getString(FB_NAME));
+            }
+        }
+    }
 
     /*
     ***Json response format***

@@ -4,17 +4,25 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
 import com.google.android.maps.*;
 import org.linnaeus.R;
 import org.linnaeus.bean.SearchCircle;
+import org.linnaeus.facebook.FacebookConstants;
+import org.linnaeus.facebook.FacebookFactory;
 import org.linnaeus.manager.AdviceManager;
 import org.linnaeus.manager.RequestManager;
 import org.linnaeus.overlay.CurrentLocationOverlay;
@@ -22,9 +30,17 @@ import org.linnaeus.overlay.SearchCircleOverlay;
 import org.linnaeus.util.MainActivityContext;
 import org.linnaeus.util.MyLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends MapActivity {
+
+    private static final String CATEGORY_KEY_PREFIX = "cat";
+    private static final String CATEGORIES_IMPORTED = "imported";
+
+    Facebook facebook = new Facebook(FacebookConstants.FACEBOOK_APP_ID);
+
+    private static boolean IS_IMPORT_FROM_FB;
 
     private static final int CURRENT_LOCATION_ZOOM_LEVEL = 10;
 
@@ -33,6 +49,9 @@ public class MainActivity extends MapActivity {
     public static final int PROGRESS_DIALOG = 3;
     public static final int KEYWORD_DIALOG = 4;
     public static final int CATEGORY_DIALOG = 5;
+    public static final int IMPORT_FB_CATEGORIES_DIALOG = 6;
+    public static final int PREFERENCES_DIALOG = 7;
+    public static final int CONFIRM_DELETE_DIALOG = 8;
 
     public final int REQUEST_TRENDS = 1;
     public final int REQUEST_ADVICE = 2;
@@ -72,6 +91,25 @@ public class MainActivity extends MapActivity {
         CurrentLocationOverlay myLocationOverlay = new CurrentLocationOverlay(getApplicationContext());
         List<Overlay> list = mapView.getOverlays();
         list.add(myLocationOverlay);
+
+        facebook.authorize(this, new Facebook.DialogListener() {
+            @Override
+            public void onComplete(Bundle values) {
+            }
+
+            @Override
+            public void onFacebookError(FacebookError error) {
+            }
+
+            @Override
+            public void onError(DialogError e) {
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
+        FacebookFactory.getInstance().initFacebook(facebook);
     }
 
     @Override
@@ -94,9 +132,16 @@ public class MainActivity extends MapActivity {
             case R.id.circle:
                 drawCircle();
                 return true;
+            case R.id.pref:
+                openPreferences();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openPreferences() {
+        showDialog(PREFERENCES_DIALOG);
     }
 
     private void drawCircle() {
@@ -172,7 +217,11 @@ public class MainActivity extends MapActivity {
                 adviceDialog.setNegativeButton(getString(R.string.main_advice_dialog_category_button),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int arg1) {
-                                showDialog(CATEGORY_DIALOG);
+                                if (isCategoriesImported()){
+                                    showDialog(CATEGORY_DIALOG);
+                                } else {
+                                    showDialog(IMPORT_FB_CATEGORIES_DIALOG);
+                                }
                             }
                         });
                 return adviceDialog.create();
@@ -204,7 +253,15 @@ public class MainActivity extends MapActivity {
             case (CATEGORY_DIALOG) :
                 AlertDialog.Builder categoryDialog = new AlertDialog.Builder(this);
                 categoryDialog.setTitle(getString(R.string.main_category_dialog_title));
-                final String[] categories = AdviceManager.getInstance().getCategories();
+                final String[] categories;
+                ArrayList<String> categoriesList = getCategoriesFromPreferences();
+                if (categoriesList.size() > 0){
+                    categories = categoriesList.toArray(new String[0]);
+                } else {
+                    categoriesList = AdviceManager.getInstance().getCategories(IS_IMPORT_FROM_FB);
+                    putCategoriesToPreferences(categoriesList);
+                    categories = categoriesList.toArray(new String[0]);
+                }
                 categoryDialog.setSingleChoiceItems(categories, -1, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item) {
                                 setCurrentCategory(item);
@@ -223,6 +280,63 @@ public class MainActivity extends MapActivity {
                             }
                         });
                 return categoryDialog.create();
+            case (IMPORT_FB_CATEGORIES_DIALOG) :
+                AlertDialog.Builder importDialog = new AlertDialog.Builder(this);
+                importDialog.setTitle(getString(R.string.main_import_dialog_title));
+                importDialog.setMessage(getString(R.string.main_import_dialog_text));
+                importDialog.setPositiveButton(getString(R.string.main_import_dialog_request_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                IS_IMPORT_FROM_FB = true;
+                                showDialog(CATEGORY_DIALOG);
+                            }
+                        });
+                importDialog.setNegativeButton(getString(R.string.main_import_dialog_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                IS_IMPORT_FROM_FB = false;
+                                showDialog(CATEGORY_DIALOG);
+                            }
+                        });
+                return importDialog.create();
+            case (PREFERENCES_DIALOG) :
+                AlertDialog.Builder prefDialog = new AlertDialog.Builder(this);
+                prefDialog.setTitle(getString(R.string.pref_dialog_title));
+                String[] preferences = {getString(R.string.pref_dialog_remove_categories)};
+                prefDialog.setItems(preferences, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                dismissDialog(PREFERENCES_DIALOG);
+                                switch (item){
+                                    case 0:
+                                        showDialog(CONFIRM_DELETE_DIALOG);
+                                        break;
+                                }
+                            }
+                        });
+                prefDialog.setNegativeButton(getString(R.string.main_category_dialog_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                dismissDialog(PREFERENCES_DIALOG);
+                            }
+                        });
+                return prefDialog.create();
+            case (CONFIRM_DELETE_DIALOG) :
+                AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+                deleteDialog.setTitle(getString(R.string.delete_dialog_title));
+                deleteDialog.setMessage(getString(R.string.delete_dialog_text));
+                deleteDialog.setPositiveButton(getString(R.string.delete_dialog_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                clearSharedPreferences();
+                            }
+                        });
+                deleteDialog.setNegativeButton(getString(R.string.delete_dialog_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                dismissDialog(CONFIRM_DELETE_DIALOG);
+                            }
+                        });
+                return deleteDialog.create();
         }
         return null;
     }
@@ -280,5 +394,47 @@ public class MainActivity extends MapActivity {
 
     public void setCurrentCategory(int currentCategory) {
         this.currentCategory = currentCategory;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        facebook.authorizeCallback(requestCode, resultCode, data);
+    }
+
+    private void putCategoriesToPreferences(ArrayList<String> categories){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        for (int i = 0; i < categories.size(); i++){
+            editor.putString(CATEGORY_KEY_PREFIX + i, categories.get(i));
+        }
+        editor.putBoolean(CATEGORIES_IMPORTED, true);
+        editor.commit();
+    }
+
+    private ArrayList<String> getCategoriesFromPreferences(){
+        ArrayList<String> categories = new ArrayList<String>();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int i = 0;
+        String key = CATEGORY_KEY_PREFIX + i;
+        while (preferences.contains(key)){
+            categories.add(preferences.getString(key, ""));
+            i++;
+            key = CATEGORY_KEY_PREFIX + i;
+        }
+        return categories;
+    }
+
+    private boolean isCategoriesImported(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getBoolean(CATEGORIES_IMPORTED, false);
+    }
+
+    private void clearSharedPreferences() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
     }
 }

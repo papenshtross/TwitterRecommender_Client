@@ -84,31 +84,10 @@ public class RestClient {
         // to worry about connection release
 
         if (entity != null) {
-
             // A Simple JSON Response Read
             InputStream instream = entity.getContent();
             result = convertStreamToString(instream);
             Log.i("Praeda",result);
-
-
-            /*// A Simple JSONObject Creation
-            json = new JSONObject(result);
-            Log.i("Praeda","<jsonobject>\n"+json.toString()+"\n</jsonobject>");
-
-            // A Simple JSONObject Parsing
-            JSONArray nameArray=json.names();
-            JSONArray valArray=json.toJSONArray(nameArray);
-            for(int i=0;i<valArray.length();i++)
-            {
-                Log.i("Praeda","<jsonname"+i+">\n"+nameArray.getString(i)+"\n</jsonname"+i+">\n"
-                        +"<jsonvalue"+i+">\n"+valArray.getString(i)+"\n</jsonvalue"+i+">");
-            }
-
-            // A Simple JSONObject Value Pushing
-            json.put("sample key", "sample value");
-            Log.i("Praeda","<jsonobject>\n"+json.toString()+"\n</jsonobject>");*/
-
-            // Closing the input stream will trigger connection release
             instream.close();
         }
         return result;

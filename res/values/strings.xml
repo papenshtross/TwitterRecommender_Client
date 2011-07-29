@@ -5,7 +5,8 @@
 
     <!--Main activity -->
     <string name="main_menu_mylocation">My Location</string>
-    <string name="main_menu_help">How To?</string>
+    <string name="main_menu_help">About</string>
+    <string name="main_menu_preferences">Preferences</string>
     <string name="main_error_mylocation">My Location Is Not Availible</string>
     <string name="main_error_services">Turn On Location Services</string>
     <string name="main_menu_circle">Draw a Circle</string>
@@ -25,6 +26,11 @@
     <string name="main_category_dialog_title">Choose a category</string>
     <string name="main_category_dialog_request_button">Request</string>
     <string name="main_category_dialog_cancel_button">Cancel</string>
+
+    <string name="main_import_dialog_title">Import from Facebook?</string>
+    <string name="main_import_dialog_text">Would you like to import categories from your Facebook profile?</string>
+    <string name="main_import_dialog_request_button">Yes, Please</string>
+    <string name="main_import_dialog_cancel_button">Hell No!</string>
 
     <!--Search circle overlay-->
     <string name="search_circle_dialog_title">Confirm Analysis?</string>
@@ -46,5 +52,15 @@
     <string name="trends_units">m</string>
     <string name="trends_google_it">Google It?</string>
     <string name="trends_google_button">Google</string>
+
+    <!--Preferences Dialog-->
+    <string name="pref_dialog_title">Preferences</string>
+    <string name="pref_dialog_remove_categories">Remove Saved Categories</string>
+
+    <!--Confirm Delete Dialog-->
+    <string name="delete_dialog_title">Clear?</string>
+    <string name="delete_dialog_text">Wanna clear saved categories?</string>
+    <string name="delete_dialog_ok">Yes, Please</string>
+    <string name="delete_dialog_no">Hell No</string>
 
 </resources>
