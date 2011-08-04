@@ -22,6 +22,7 @@ public class RestClient {
     public static final String LNG = "lng";
     public static final String DISTANCE = "distance";
     public static final String ADVICE_REQUEST = "adviceRequest";
+    public static final String ADVICE_TYPE = "type";
 
     private static String convertStreamToString(InputStream is) {
 		/*
@@ -67,6 +68,9 @@ public class RestClient {
 
         if (params.length > 0){
            json.put(ADVICE_REQUEST, params[0]);
+            if(params.length > 1){
+                json.put(ADVICE_TYPE, params[1]);
+            }
         }
 
         StringEntity se = new StringEntity(json.toString(), "UTF-8");

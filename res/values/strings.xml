@@ -11,26 +11,37 @@
     <string name="main_error_services">Turn On Location Services</string>
     <string name="main_menu_circle">Draw a Circle</string>
 
+    <!--Progress dialog-->
     <string name="main_progress_dialog_title">Search Request</string>
     <string name="main_progress_dialog_text">Request in progress...</string>
 
+    <!--Select recommendation way dialog-->
     <string name="main_advice_dialog_title">Select Rec Way</string>
     <string name="main_advice_dialog_text">You may enter keyword either select a category</string>
     <string name="main_advice_dialog_keyword_button">Keyword</string>
     <string name="main_advice_dialog_category_button">Category</string>
 
+    <!--Keyword dialog-->
     <string name="main_keyword_dialog_title">Enter keyword</string>
     <string name="main_keyword_dialog_request_button">Request</string>
     <string name="main_keyword_dialog_cancel_button">Cancel</string>
 
+    <!--Category dialog-->
     <string name="main_category_dialog_title">Choose a category</string>
     <string name="main_category_dialog_request_button">Request</string>
     <string name="main_category_dialog_cancel_button">Cancel</string>
 
+    <!--Facebook import dialog-->
     <string name="main_import_dialog_title">Import from Facebook?</string>
     <string name="main_import_dialog_text">Would you like to import categories from your Facebook profile?</string>
     <string name="main_import_dialog_request_button">Yes, Please</string>
-    <string name="main_import_dialog_cancel_button">Hell No!</string>
+    <string name="main_import_dialog_cancel_button">No</string>
+
+    <!--Advice type dialog-->
+    <string name="main_advice_type_dialog_title">Choose type of Advice</string>
+    <string name="main_advice_type_dialog_text">What would you like to explore?</string>
+    <string name="main_advice_type_dialog_info">Information</string>
+    <string name="main_advice_type_dialog_places">Places</string>
 
     <!--Search circle overlay-->
     <string name="search_circle_dialog_title">Confirm Analysis?</string>
@@ -61,6 +72,6 @@
     <string name="delete_dialog_title">Clear?</string>
     <string name="delete_dialog_text">Wanna clear saved categories?</string>
     <string name="delete_dialog_ok">Yes, Please</string>
-    <string name="delete_dialog_no">Hell No</string>
+    <string name="delete_dialog_no">No</string>
 
 </resources>

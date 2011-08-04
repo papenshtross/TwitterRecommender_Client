@@ -60,11 +60,11 @@ public class RequestManager {
         context.startActivity(intent);
     }
 
-    public void requestRecommendation(SearchCircle searchCircle, String value) {
+    public void requestRecommendation(SearchCircle searchCircle, String value, String type) {
         ArrayList<Advice> advices = new ArrayList<Advice>();
         try {
             String jsonAdvices = RestClient.sendCircleToService(searchCircle, Properties.getProperty(context,
-                    Properties.ANALYSER_SERVICE_URL_ADVICE), value);
+                    Properties.ANALYSER_SERVICE_URL_ADVICE), value, type);
             if (jsonAdvices != null){
                 advices = JsonParser.parseAdvicesFromJson(jsonAdvices);
             }

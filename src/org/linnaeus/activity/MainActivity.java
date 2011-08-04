@@ -27,6 +27,7 @@ import org.linnaeus.manager.AdviceManager;
 import org.linnaeus.manager.RequestManager;
 import org.linnaeus.overlay.CurrentLocationOverlay;
 import org.linnaeus.overlay.SearchCircleOverlay;
+import org.linnaeus.twitter.TwitterConstants;
 import org.linnaeus.util.MainActivityContext;
 import org.linnaeus.util.MyLocation;
 
@@ -37,6 +38,7 @@ public class MainActivity extends MapActivity {
 
     private static final String CATEGORY_KEY_PREFIX = "cat";
     private static final String CATEGORIES_IMPORTED = "imported";
+    private static String valueToRequest;
 
     Facebook facebook = new Facebook(FacebookConstants.FACEBOOK_APP_ID);
 
@@ -52,6 +54,7 @@ public class MainActivity extends MapActivity {
     public static final int IMPORT_FB_CATEGORIES_DIALOG = 6;
     public static final int PREFERENCES_DIALOG = 7;
     public static final int CONFIRM_DELETE_DIALOG = 8;
+    public static final int ADVICE_TYPE_DIALOG = 9;
 
     public final int REQUEST_TRENDS = 1;
     public final int REQUEST_ADVICE = 2;
@@ -240,7 +243,8 @@ public class MainActivity extends MapActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int arg1) {
                                 String value = input.getText().toString();
-                                requestRecommendation(value);
+                                setValueToRequest(value);
+                                showDialog(ADVICE_TYPE_DIALOG);
                             }
                         });
                 keywordDialog.setNegativeButton(getString(R.string.main_keyword_dialog_cancel_button),
@@ -270,7 +274,8 @@ public class MainActivity extends MapActivity {
                 categoryDialog.setPositiveButton(getString(R.string.main_category_dialog_request_button),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int arg1) {
-                                requestRecommendation(categories[currentCategory]);
+                                setValueToRequest(categories[currentCategory]);
+                                showDialog(ADVICE_TYPE_DIALOG);
                             }
                         });
                 categoryDialog.setNegativeButton(getString(R.string.main_keyword_dialog_cancel_button),
@@ -328,6 +333,7 @@ public class MainActivity extends MapActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int arg1) {
                                 clearSharedPreferences();
+                                removeDialog(CATEGORY_DIALOG);
                             }
                         });
                 deleteDialog.setNegativeButton(getString(R.string.delete_dialog_no),
@@ -337,6 +343,25 @@ public class MainActivity extends MapActivity {
                             }
                         });
                 return deleteDialog.create();
+            case (ADVICE_TYPE_DIALOG) :
+                AlertDialog.Builder adviceTypeDialog = new AlertDialog.Builder(this);
+                adviceTypeDialog.setTitle(getString(R.string.main_advice_type_dialog_title));
+                adviceTypeDialog.setMessage(getString(R.string.main_advice_type_dialog_text));
+                adviceTypeDialog.setPositiveButton(getString(R.string.main_advice_type_dialog_info),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                requestRecommendation(getValueToRequest()
+                                        , TwitterConstants.ADVICE_REQUEST_TYPE_INFO);
+                            }
+                        });
+                adviceTypeDialog.setNegativeButton(getString(R.string.main_advice_type_dialog_places),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int arg1) {
+                                requestRecommendation(getValueToRequest()
+                                        , TwitterConstants.ADVICE_REQUEST_TYPE_PLACES);
+                            }
+                        });
+                return adviceTypeDialog.create();
         }
         return null;
     }
@@ -345,8 +370,8 @@ public class MainActivity extends MapActivity {
         removeSearchOverlay();
     }
 
-    private void requestRecommendation(String value) {
-        new SearchRequest().execute(String.valueOf(REQUEST_ADVICE), value);
+    private void requestRecommendation(String value, String type) {
+        new SearchRequest().execute(String.valueOf(REQUEST_ADVICE), value, type);
         removeSearchOverlay();
     }
 
@@ -376,7 +401,7 @@ public class MainActivity extends MapActivity {
                     RequestManager.getInstance().requestTrends(searchCircle);
                     break;
                 case REQUEST_ADVICE:
-                    RequestManager.getInstance().requestRecommendation(searchCircle, request[1]);
+                    RequestManager.getInstance().requestRecommendation(searchCircle, request[1], request[2]);
                     break;
             }
 			return null;
@@ -436,5 +461,13 @@ public class MainActivity extends MapActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
+    }
+
+    public static String getValueToRequest() {
+        return valueToRequest;
+    }
+
+    public static void setValueToRequest(String valueToRequest) {
+        MainActivity.valueToRequest = valueToRequest;
     }
 }
